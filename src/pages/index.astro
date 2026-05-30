@@ -1,8 +1,31 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import Home from '@layouts/Home.astro';
+import ProjectCard from '@components/ProjectCard.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '@consts';
+
+const projects = (await getCollection('projects')).sort(
+    (a, b) => a.data.order - b.data.order
+);
 ---
 
-<Layout>
-    <h2>網站</h2>
-    <h3><a href="https://easytools.bgflow.net">簡單工具流 EasyTools</a></h3>
-</Layout>
+<Home>
+    <header class="home-header">
+        <p class="site-kicker">BGFLOW.NET</p>
+        <h1 class="site-title">{SITE_TITLE}</h1>
+        <p class="site-description">{SITE_DESCRIPTION}</p>
+    </header>
+
+    <h2 class="home-title">專案列表</h2>
+    <div class="project-grid">
+        {
+            projects.map(({ data }) => (
+                <ProjectCard
+                    href={data.href}
+                    title={data.title}
+                    description={data.description}
+                />
+            ))
+        }
+    </div>
+</Home>
